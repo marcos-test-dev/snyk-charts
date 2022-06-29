@@ -7,7 +7,7 @@
 
 ## :bar_chart: Snyk Charts
 
-Please note this is not an offical feature of Snyk. This was created as a hobby to be consumed and maintained by the community.
+Please note this is not an official feature of Snyk. This was created as a hobby to be consumed and maintained by the community.
 
 ### Usage
 

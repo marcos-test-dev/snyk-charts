@@ -31,11 +31,13 @@ def main():
     rprint("[bold magenta]" + title)
     rprint("[cyan]GENERATE INTERACTIVE CHARTS DERIVED FROM THE SNYK API[/cyan] \n \n")
 
+    options = ["Issues over time", "Trending Issues"]
+    terminal_menu = TerminalMenu(options, title="Please select your desired chart")
+    menu_entry_index = terminal_menu.show()
+
     print("Loading   ", end="")
 
-    selection = input("Which endpoint to follow ?")
-
-    if selection == "old":
+    if (menu_entry_index == 0):
         endpoint = "https://snyk.io/api/v1/reporting/counts/issues?from=2022-05-01&to=2022-06-27&groupBy=severity"
     else:
         endpoint = "https://snyk.io/api/v1/reporting/issues/?from=2022-05-01&to=2022-06-27&page=1&perPage=100&sortBy=issueTitle&order=asc&groupBy=issue"
@@ -102,7 +104,7 @@ def main():
     request = requests.request("POST", endpoint, headers=headers, data=values)
     response = request.json()
 
-    if selection == "old":
+    if (menu_entry_index == 0):
         time_period = []
 
         low_count = []

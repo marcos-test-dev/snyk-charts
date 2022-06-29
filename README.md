@@ -2,9 +2,6 @@
     Snyk Charts: Generate interactive charts derived from the Snyk API
 </h3>
 
-<p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/marcosbergami/todoapi">
-
   <img alt="Last commit" src="https://img.shields.io/github/last-commit/snyk-marcos/snyk-charts">
 </p>
 

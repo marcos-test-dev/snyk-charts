@@ -1,5 +1,6 @@
 .dccache
 .DS_Store
 virtualenv
+virtual
 images
 parameters.txt

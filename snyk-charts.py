@@ -26,6 +26,10 @@ def main():
     apiToken = data['TOKEN']
     startDate = data['START_DATE']
     endDate = data['END_DATE']
+    perPage = data['ISSUE_PER_PAGE']
+
+    if (len(perPage)==0 or int(perPage) > 1000):
+        perPage = 100
 
     title = pyfiglet.figlet_format("Snyk Charts", font="slant")
     rprint("[bold magenta]" + title)
@@ -42,7 +46,7 @@ def main():
     if (menu_entry_index == 0):
         endpoint = "https://snyk.io/api/v1/reporting/counts/issues?from=" + startDate + "&to=" + endDate + "&groupBy=severity"
     else:
-        endpoint = "https://snyk.io/api/v1/reporting/issues/?from=" + startDate + "&to=" + endDate + "&page=1&perPage=100&sortBy=issueTitle&order=asc&groupBy=issue"
+        endpoint = "https://snyk.io/api/v1/reporting/issues/?from=" + startDate + "&to=" + endDate + "&page=1&perPage=" + str(perPage) + "&sortBy=introducedDate&order=asc&groupBy=issue"
 
     response = api_request(apiToken, orgId, endpoint)
 
@@ -84,20 +88,14 @@ def generate_issues_over_time(obj):
                             line=dict(color='crimson', width=4)))
 
     # Edit the layout of the chart
-    fig.update_layout(title='Issues over time',
+    fig.update_layout(title='Issues over time (Open Source)',
                     xaxis_title='Month',
                     yaxis_title='Issues')
 
 
     print("Chart coming out of the oven!")
 
-    saveChart = save_chart()
-
-    # Save chart locally to images folder with unique name
-    if (saveChart == 1):
-        ts = str(time.time())
-        ts = ts.replace(".","")
-        fig.write_image("images/" + ts + "issues_over_time_chart.png")
+    save_chart(fig, 0)
     
     fig.show()
 
@@ -117,19 +115,13 @@ def generate_issues_trending(obj, startDate, endDate):
 
     fig = go.Figure([go.Bar(x=issuesLabel, y=issuesCount)])
     
-    fig.update_layout(title="Trending issues " + startDate + " - " + endDate)
+    fig.update_layout(title="Trending issues " + startDate + " - " + endDate + " (Open Source)")
     
-    saveChart = save_chart()
-
-    # Save chart locally to images folder with unique name
-    if (saveChart == 1):
-        ts = str(time.time())
-        ts = ts.replace(".","")
-        fig.write_image("images/" + ts + "trending_issues_chart.png")
+    save_chart(fig, 1)
     
     fig.show()
 
-def save_chart():
+def save_chart(obj, chartType):
     options = ["No", "Yes"]
     cursor_style = ("fg_purple", "bold")
     terminal_menu = TerminalMenu(options, title="Would you like to save a copy of this chart now ? \n", menu_cursor_style=cursor_style)
@@ -137,7 +129,23 @@ def save_chart():
     
     # Save chart locally to images folder with unique name
     if (menu_entry_index == 1):
-        return menu_entry_index
+        ts = str(time.time())
+        ts = ts.replace(".","")
+        fileType = ["HTML", "PNG"]
+        cursor_style = ("fg_purple", "bold")
+        terminal_menu = TerminalMenu(fileType, title="Please select your file type \n", menu_cursor_style=cursor_style)
+        menu_entry_index = terminal_menu.show()
+        
+        match chartType:
+            case 0: #issues over time
+                fileName = ts + "_issues_over_time_chart"
+            case 1: #trending issues
+                fileName = ts + "_trending_issues_chart"
+
+        if (menu_entry_index == 0):
+            obj.write_html("images/" + fileName + ".html")
+        else:
+            obj.write_image("images/" + fileName + ".png")
 
 def api_request(apiToken, orgId, endpoint):
     headers = {
@@ -158,8 +166,6 @@ def api_request(apiToken, orgId, endpoint):
             ],
             "types": [
             "vuln"
-            # "license",
-            # "configuration"
             ],
             "languages": [
             "node",

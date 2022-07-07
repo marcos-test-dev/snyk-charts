@@ -21,7 +21,7 @@ To get started, clone the repository and install the necessary dependencies by r
 - **`TOKEN=your-snyk-token`**
 - **`START_DATE=yyyy-mm-dd`**
 - **`END_DATE=yyyy-mm-dd`**
-- **`PER_PAGE=123` (Maximum 1000)**
+- **`PER_PAGE=123`** (Maximum 1000)
 > Please note the `PER_PAGE` parameter is only available in **Version 2.0.0**
 
 :arrow_right: Place your `parameters.txt` file in the root of the project
